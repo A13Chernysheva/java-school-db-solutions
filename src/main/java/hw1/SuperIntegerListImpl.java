@@ -16,11 +16,7 @@ public class SuperIntegerListImpl implements SuperIntegerList {
         }
         backupList[len] = number;
         len++;
-        //list = backupList; Why is it work?
-        list = new int[len];
-        for(int i = 0; i < len; i++) {
-            list[i] = backupList[i];
-        }
+        list = backupList;
     }
 
     @Override
