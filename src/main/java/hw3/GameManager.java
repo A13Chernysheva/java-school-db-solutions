@@ -4,13 +4,14 @@ import java.util.Random;
 
 public class GameManager {
 
+    private Random rand = new Random();
+
     Hero createHero() {
         HobbitFactory hobbit = new HobbitFactory();
         ElfFactory elf = new ElfFactory();
         KingFactory king = new KingFactory();
         KnightFactory knight = new  KnightFactory();
 
-        Random rand = new Random();
         HeroFactory[] factories = {hobbit, elf, king, knight};
         HeroFactory factory = factories[rand.nextInt(factories.length)];
 

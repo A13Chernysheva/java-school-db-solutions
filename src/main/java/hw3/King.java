@@ -4,14 +4,16 @@ import java.util.Random;
 
 class King extends Hero{
 
-    int maxHp = 15;
-    int minHp = 5;
+    private int maxHp = 15;
+    private int minHp = 5;
 
-    int maxPower = 15;
-    int minPower = 5;
+    private int maxPower = 15;
+    private int minPower = 5;
+
+    private Random rand = new Random();
 
     King() {
-        Random rand = new Random();
+
         hp = rand.nextInt((maxHp - minHp) + 1) + minHp;
         power = rand.nextInt((maxPower - minPower) + 1) + minPower;
         role = "King";
