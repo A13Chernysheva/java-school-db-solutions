@@ -1,8 +1,21 @@
 package hw3;
 
-import hw3.heroes.Hero;
+import java.util.Random;
 
 public class GameManager {
+
+    Hero createHero() {
+        HobbitFactory hobbit = new HobbitFactory();
+        ElfFactory elf = new ElfFactory();
+        KingFactory king = new KingFactory();
+        KnightFactory knight = new  KnightFactory();
+
+        Random rand = new Random();
+        HeroFactory[] factories = {hobbit, elf, king, knight};
+        HeroFactory factory = factories[rand.nextInt(factories.length)];
+
+        return factory.createHero();
+    }
 
     void fight(Hero hero1, Hero hero2) {
         while (hero1.isAlive() && hero2.isAlive()) {

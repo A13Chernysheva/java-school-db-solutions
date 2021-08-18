@@ -1,22 +1,21 @@
-package hw3.heroes;
+package hw3;
 
-import hw3.Weapon;
 
 import java.util.Random;
 
-public class King extends Hero{
+class Knight extends Hero{
 
-    int maxHp = 15;
-    int minHp = 5;
+    int maxHp = 12;
+    int minHp = 2;
 
-    int maxPower = 15;
-    int minPower = 5;
+    int maxPower = 12;
+    int minPower = 2;
 
-    King() {
+    Knight() {
         Random rand = new Random();
         hp = rand.nextInt((maxHp - minHp) + 1) + minHp;
         power = rand.nextInt((maxPower - minPower) + 1) + minPower;
-        role = "King";
+        role = "Knight";
 
     }
 

@@ -1,9 +1,7 @@
-package hw3.heroes;
+package hw3;
 
 
-import hw3.Weapon;
-
-public class Elf extends Hero{
+class Elf extends Hero{
 
     Elf() {
         hp = 10;

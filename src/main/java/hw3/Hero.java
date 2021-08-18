@@ -1,4 +1,4 @@
-package hw3.heroes;
+package hw3;
 
 import com.github.javafaker.Faker;
 import lombok.Getter;
@@ -17,7 +17,7 @@ public abstract class Hero {
 
     public Hero() {
         Faker faker = new Faker();
-        name = faker.gameOfThrones().character();
+        name = faker.harryPotter().character();
     }
 
     public abstract String kick(Hero hero);

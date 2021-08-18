@@ -1,7 +1,5 @@
 package hw3;
 
-import hw3.heroes.Hero;
-
 import java.util.Random;
 
 public class Weapon {

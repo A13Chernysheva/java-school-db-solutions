@@ -1,8 +1,6 @@
-package hw3.heroes;
+package hw3;
 
-import hw3.Weapon;
-
-public class Hobbit extends Hero{
+class Hobbit extends Hero{
 
     Hobbit() {
         power = 0;
