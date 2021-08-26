@@ -1,11 +1,9 @@
 package my_spring;
 
-import utils.RandomUtil;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import org.reflections.Reflections;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -17,11 +15,11 @@ import java.util.Set;
  */
 public class ObjectFactory {
     @Getter
-    private static ObjectFactory instance = new ObjectFactory();
-    private Config config = new JavaConfig();
-    private Reflections scanner = new Reflections("my_spring");
+    private static final ObjectFactory instance = new ObjectFactory();
+    private final Config config = new JavaConfig();
+    private final Reflections scanner = new Reflections("my_spring");
 
-    private List<ObjectConfigurator> configurators = new ArrayList<>();
+    private final List<ObjectConfigurator> configurators = new ArrayList<>();
 
     @SneakyThrows
     public ObjectFactory() {
