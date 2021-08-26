@@ -47,26 +47,7 @@ public class ObjectFactory {
 
         invokeInit(type, t);
 
-        t = getProxyInstanceIfNeeded(type, t);
-
-        return t;
-    }
-
-    private <T> T getProxyInstanceIfNeeded(Class<T> type, T t) {
-
-        if (type.isAnnotationPresent(Benchmark.class) || Arrays.stream(type.getDeclaredMethods()).anyMatch(field -> field.isAnnotationPresent(Benchmark.class))) {
-            if (Arrays.stream(type.getInterfaces()).count() == 0) {
-                Enhancer enhancer = new Enhancer();
-                enhancer.setSuperclass(type);
-                enhancer.setCallback(new CglibInterceptor<T>(t));
-                return (T) enhancer.create();
-            }
-            else {
-                return (T) Proxy.newProxyInstance(type.getClassLoader()
-                        , type.getInterfaces()
-                        , new BenchmarkInvocationHandler<T>(t));
-            }
-        }
+        t = (T) new ProxyService<T>(t, type).getProxyInstanceIfNeeded();
 
         return t;
     }
