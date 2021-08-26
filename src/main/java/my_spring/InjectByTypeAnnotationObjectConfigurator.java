@@ -19,6 +19,8 @@ public class InjectByTypeAnnotationObjectConfigurator implements ObjectConfigura
             if (field.isAnnotationPresent(InjectByType.class)) {
                 field.setAccessible(true);
                 Object object = ObjectFactory.getInstance().createObject(field.getType());
+//                System.out.println(t);
+//                System.out.println(object);
                 field.set(t, object);
             }
         }

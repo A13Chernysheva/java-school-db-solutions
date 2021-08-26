@@ -1,6 +1,5 @@
 package my_spring;
 
-
 /**
  * @author Evgeny Borisov
  */
@@ -13,6 +12,7 @@ public class Main {
 
 
         IRobot iRobot = ObjectFactory.getInstance().createObject(IRobot.class);
+
         iRobot.cleanRoom();
     }
 }

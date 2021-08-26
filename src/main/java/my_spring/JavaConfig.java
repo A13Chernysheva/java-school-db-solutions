@@ -12,7 +12,8 @@ public class JavaConfig implements Config {
 
     public JavaConfig() {
         ifc2ImplClass.put(Speaker.class, ConsoleSpeaker.class);
-        ifc2ImplClass.put(Cleaner.class, ProxyCleaner.class);
+        ifc2ImplClass.put(Cleaner.class, CleanerImpl.class);
+        ifc2ImplClass.put(Recommender.class, RecommendSon.class);
 
     }
 

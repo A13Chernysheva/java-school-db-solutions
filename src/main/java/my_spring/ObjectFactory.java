@@ -2,11 +2,15 @@ package my_spring;
 
 import lombok.Getter;
 import lombok.SneakyThrows;
+import net.sf.cglib.proxy.Enhancer;
+import net.sf.cglib.proxy.MethodInterceptor;
+import org.reflections.ReflectionUtils;
 import org.reflections.Reflections;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
+import javax.annotation.PostConstruct;
+import java.lang.reflect.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -15,11 +19,11 @@ import java.util.Set;
  */
 public class ObjectFactory {
     @Getter
-    private static final ObjectFactory instance = new ObjectFactory();
-    private final Config config = new JavaConfig();
-    private final Reflections scanner = new Reflections("my_spring");
+    private static ObjectFactory instance = new ObjectFactory();
+    private Config config = new JavaConfig();
+    private Reflections scanner = new Reflections("my_spring");
 
-    private final List<ObjectConfigurator> configurators = new ArrayList<>();
+    private List<ObjectConfigurator> configurators = new ArrayList<>();
 
     @SneakyThrows
     public ObjectFactory() {
@@ -29,27 +33,50 @@ public class ObjectFactory {
                 configurators.add(aClass.getDeclaredConstructor().newInstance());
             }
         }
-
     }
+
 
     @SneakyThrows
     public <T> T createObject(Class<T> type) {
+
         type = resolveImple(type);
+
         T t = type.getDeclaredConstructor().newInstance();
+
         configure(t);
 
-        invokeInit(t);
+        invokeInit(type, t);
+
+        t = getProxyInstanceIfNeeded(type, t);
 
         return t;
     }
 
-    @SneakyThrows
-    private void invokeInit(Object t) {
-        Method[] methods = t.getClass().getDeclaredMethods();
-        for (Method method: methods) {
-            if (method.isAnnotationPresent(Init.class)) {
-                method.invoke(t);
+    private <T> T getProxyInstanceIfNeeded(Class<T> type, T t) {
+
+        if (type.isAnnotationPresent(Benchmark.class) || Arrays.stream(type.getDeclaredMethods()).anyMatch(field -> field.isAnnotationPresent(Benchmark.class))) {
+            if (Arrays.stream(type.getInterfaces()).count() == 0) {
+                Enhancer enhancer = new Enhancer();
+                enhancer.setSuperclass(type);
+                enhancer.setCallback(new CglibInterceptor<T>(t));
+                return (T) enhancer.create();
             }
+            else {
+                return (T) Proxy.newProxyInstance(type.getClassLoader()
+                        , type.getInterfaces()
+                        , new BenchmarkInvocationHandler<T>(t));
+            }
+        }
+
+        return t;
+    }
+
+    private <T> void invokeInit(Class<T> type, T t) throws IllegalAccessException, InvocationTargetException {
+        Set<Method> allMethods = ReflectionUtils
+                .getAllMethods(type, method -> method.isAnnotationPresent(PostConstruct.class));
+
+        for (Method method : allMethods) {
+            method.invoke(t);
         }
     }
 
