@@ -6,9 +6,9 @@ package my_spring;
 public class IRobot {
 
     //todo make support for @InjectByType
-    @Inject
+    @InjectByType
     private Speaker speaker;
-    @Inject
+    @InjectByType
     private Cleaner cleaner;
 
 

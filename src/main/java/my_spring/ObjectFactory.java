@@ -1,19 +1,34 @@
 package my_spring;
 
-import utils.RandomUtil;
+import org.reflections.Reflections;
 import lombok.Getter;
 import lombok.SneakyThrows;
 
-import java.lang.reflect.Field;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author Evgeny Borisov
  */
 public class ObjectFactory {
     @Getter
-    private static ObjectFactory instance = new ObjectFactory();
-    private Config config = new JavaConfig();
+    private static final ObjectFactory instance = new ObjectFactory();
+    private final List<ObjectConfigurator> configurators;
+    private static Context context;
+    private static Config config;
+
+
+    @SneakyThrows
+    ObjectFactory() {
+        context = new Context();
+        config = context.getConfig();
+        configurators = new ArrayList<>();
+        Set<Class<? extends ObjectConfigurator>> allConfigurations = new Reflections("my_spring").getSubTypesOf(ObjectConfigurator.class);
+        for (Class<? extends ObjectConfigurator> objectConfigurator: allConfigurations) {
+            configurators.add(objectConfigurator.getConstructor().newInstance());
+        }
+    }
 
     @SneakyThrows
     public <T> T createObject(Class<T> type) {
@@ -23,19 +38,7 @@ public class ObjectFactory {
 
         T t = type.getDeclaredConstructor().newInstance();
 
-        Field[] declaredFields = type.getDeclaredFields();
-
-        for (Field field: declaredFields) {
-            if (field.isAnnotationPresent(InjectRandomInt.class)) {
-                InjectRandomInt annotation = field.getAnnotation(InjectRandomInt.class);
-                field.setAccessible(true);
-                field.setInt(t, RandomUtil.between(annotation.min(), annotation.max()));
-            }
-            if (field.isAnnotationPresent(Inject.class) && field.getType().isInterface()) {
-                field.setAccessible(true);
-                field.set(t, config.getImplClass(field.getType()).getDeclaredConstructor().newInstance());
-            }
-        }
+        configurators.forEach(ObjectConfigurator -> ObjectConfigurator.configure(t, context));
 
         return t;
     }
