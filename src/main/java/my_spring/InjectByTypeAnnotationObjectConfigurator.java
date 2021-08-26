@@ -21,6 +21,5 @@ public class InjectByTypeAnnotationObjectConfigurator implements ObjectConfigura
                 field.set(t, context.getConfig().getImplClass(field.getType()).getDeclaredConstructor().newInstance());
             }
         }
-
     }
 }

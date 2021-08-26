@@ -15,16 +15,16 @@ public class ObjectFactory {
     @Getter
     private static final ObjectFactory instance = new ObjectFactory();
     private final List<ObjectConfigurator> configurators;
-    private static Context context;
+    private Reflections scanner = new Reflections("my_spring");
+    private static Context context = new Context();
     private static Config config;
 
 
     @SneakyThrows
     ObjectFactory() {
-        context = new Context();
         config = context.getConfig();
         configurators = new ArrayList<>();
-        Set<Class<? extends ObjectConfigurator>> allConfigurations = new Reflections("my_spring").getSubTypesOf(ObjectConfigurator.class);
+        Set<Class<? extends ObjectConfigurator>> allConfigurations = scanner.getSubTypesOf(ObjectConfigurator.class);
         for (Class<? extends ObjectConfigurator> objectConfigurator: allConfigurations) {
             configurators.add(objectConfigurator.getConstructor().newInstance());
         }
@@ -37,7 +37,6 @@ public class ObjectFactory {
         }
 
         T t = type.getDeclaredConstructor().newInstance();
-
         configurators.forEach(ObjectConfigurator -> ObjectConfigurator.configure(t, context));
 
         return t;
