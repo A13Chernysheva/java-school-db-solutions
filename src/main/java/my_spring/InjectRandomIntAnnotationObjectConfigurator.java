@@ -1,17 +1,17 @@
 package my_spring;
 
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import utils.RandomUtil;
 import lombok.SneakyThrows;
 
 import java.lang.reflect.Field;
 
-@NoArgsConstructor
+/**
+ * @author Evgeny Borisov
+ */
 public class InjectRandomIntAnnotationObjectConfigurator implements ObjectConfigurator {
     @Override
     @SneakyThrows
-    public void configure(Object t, Context context) {
+    public void configure(Object t) {
         Class<?> type = t.getClass();
         for (Field field : type.getDeclaredFields()) {
             InjectRandomInt annotation = field.getAnnotation(InjectRandomInt.class);

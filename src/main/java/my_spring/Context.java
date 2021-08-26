@@ -1,9 +1,13 @@
 package my_spring;
 
-import lombok.Data;
-import lombok.Getter;
+import java.util.Map;
 
-public class Context {
-    @Getter
-    private final Config config = new JavaConfig();
+/**
+ * @author Evgeny Borisov
+ */
+public interface Context {
+    String getPackagesToScan();
+    Map<Class,Class> getIfc2ImplClass();
+
+    <T> T getObject(Class<T> type);
 }
